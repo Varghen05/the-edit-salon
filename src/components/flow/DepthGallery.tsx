@@ -59,6 +59,18 @@ export default function DepthGallery() {
         window.addEventListener("pointermove", move);
         return () => window.removeEventListener("pointermove", move);
       });
+      // Phones: each photo tips up out of depth as it arrives, and the two columns drift at different speeds
+      mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
+        gsap.utils.toArray<HTMLElement>(".dg-m").forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { y: 70, rotateX: 22, scale: 0.9, opacity: 0, transformPerspective: 700, transformOrigin: "50% 100%" },
+            { y: 0, rotateX: 0, scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: el, start: "top 98%", end: "top 62%", scrub: 0.6 } },
+          );
+          gsap.to(el, { yPercent: i % 2 ? -7 : 5, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.6 } });
+        });
+        gsap.from(".dg-title > *", { y: 30, opacity: 0, duration: 1, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: ".dg-title", start: "top 85%" } });
+      });
       return () => mm.revert();
     },
     { scope: root },
@@ -98,7 +110,7 @@ export default function DepthGallery() {
       {/* phones */}
       <div className="relative z-10 columns-2 gap-3 px-4 pt-12 pb-24 md:hidden">
         {gallery.map((g) => (
-          <div key={g.src} className="relative mb-3 break-inside-avoid overflow-hidden rounded-2xl" style={{ aspectRatio: `${g.w} / ${g.h}` }}>
+          <div key={g.src} className="dg-m relative mb-3 break-inside-avoid overflow-hidden rounded-2xl" style={{ aspectRatio: `${g.w} / ${g.h}` }}>
             <Image src={g.src} alt={g.alt} fill sizes="50vw" className="object-cover" />
           </div>
         ))}

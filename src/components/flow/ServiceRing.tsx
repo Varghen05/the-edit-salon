@@ -70,6 +70,29 @@ export default function ServiceRing() {
           scrollTrigger: { trigger: root.current, start: "top top", end: `+=${n * 75}%`, scrub: 1, pin: true },
         });
       });
+      // Phones and tablets: as the row is swiped, each card swings in 3D around the centre one
+      mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
+        const sc = root.current!.querySelector<HTMLElement>(".svc-scroller")!;
+        const items = gsap.utils.toArray<HTMLElement>(".svc-m");
+        const update = () => {
+          const cr = sc.getBoundingClientRect();
+          const mid = cr.left + cr.width / 2;
+          items.forEach((c) => {
+            const r = c.getBoundingClientRect();
+            const off = gsap.utils.clamp(-1.3, 1.3, (r.left + r.width / 2 - mid) / (cr.width / 1.6));
+            gsap.set(c, { rotateY: -off * 38, scale: 1 - Math.abs(off) * 0.12, opacity: 1 - Math.abs(off) * 0.42, transformPerspective: 900 });
+          });
+        };
+        update();
+        sc.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        gsap.from(sc, { y: 60, opacity: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: sc, start: "top 88%" } });
+        gsap.from(".svc-hint", { opacity: 0, x: -20, duration: 1, delay: 0.6, scrollTrigger: { trigger: sc, start: "top 88%" } });
+        return () => {
+          sc.removeEventListener("scroll", update);
+          window.removeEventListener("resize", update);
+        };
+      });
       return () => mm.revert();
     },
     { scope: root },
@@ -121,11 +144,11 @@ export default function ServiceRing() {
       </div>
 
       {/* phones and tablets */}
-      <div className="relative mt-12 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-24 lg:hidden" style={{ perspective: "900px" }}>
-        {services.map((s, i) => (
-          <a key={s.key} href="#prices" className="glass block w-[250px] shrink-0 snap-start rounded-[28px] p-2.5" style={{ transform: `rotateY(${i % 2 ? -5 : 5}deg)` }}>
+      <div className="svc-scroller relative mt-12 flex snap-x snap-mandatory scroll-px-[calc(50%-125px)] gap-3 overflow-x-auto px-[calc(50%-125px)] pb-6 lg:hidden">
+        {services.map((s) => (
+          <a key={s.key} href="#prices" className="svc-m glass block w-[250px] shrink-0 snap-center rounded-[28px] p-2.5">
             <div className="relative h-[240px] overflow-hidden rounded-[20px]">
-              <Image src={s.img} alt={`${s.title} at THE EDIT`} fill sizes="250px" className="object-cover" />
+              <Image src={s.img} alt={`${s.title} at THE EDIT`} fill sizes="250px" loading="eager" className="object-cover" />
             </div>
             <div className="px-2 pt-4 pb-2">
               <h3 className="font-serif text-3xl">{s.title}</h3>
@@ -135,6 +158,7 @@ export default function ServiceRing() {
           </a>
         ))}
       </div>
+      <p className="svc-hint relative px-5 pb-20 text-center text-[0.65rem] tracking-[0.3em] text-silver/50 lg:hidden">SWIPE TO EXPLORE →</p>
     </section>
   );
 }
