@@ -21,18 +21,14 @@ export default function Founders() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        if (window.innerWidth >= 1024) gsap.from(".fd-card", { rotateY: -22, rotateX: 6, opacity: 0, y: 50, duration: 1.6, ease: "expo.out", scrollTrigger: { trigger: root.current, start: "top 70%" } });
+        gsap.from(".fd-card", { rotateY: -22, rotateX: 6, opacity: 0, y: 50, duration: 1.6, ease: "expo.out", scrollTrigger: { trigger: root.current, start: "top 70%" } });
         gsap.utils.toArray<HTMLElement>(".fd-chapter").forEach((el) => {
           gsap.from(el, { opacity: 0, y: 50, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } });
         });
       });
-      // Phones and tablets: the portrait card sweeps through a 3D turn as it crosses the screen
-      mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.fromTo(
-          ".fd-card",
-          { rotateY: -16, rotateX: 5, y: 40, opacity: 0.4, transformPerspective: 900 },
-          { rotateY: 14, rotateX: -4, y: -20, opacity: 1, ease: "none", scrollTrigger: { trigger: ".fd-card", start: "top 95%", end: "bottom 10%", scrub: 0.8 } },
-        );
+      // Touch screens have no pointer to follow, so the card sways gently on its own
+      mm.add("(pointer: coarse) and (prefers-reduced-motion: no-preference)", () => {
+        gsap.to(".fd-card", { rotateY: 9, rotateX: -4, duration: 4.2, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.6 });
       });
       mm.add("(pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
         const el = card.current!;

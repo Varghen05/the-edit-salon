@@ -44,6 +44,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
     const el = host.current;
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -127,6 +128,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       raf = requestAnimationFrame(tick);
       if (!visible) return;
       const t = reduce ? 1 : clock.getElapsedTime();
+      if (coarse) target.set(Math.sin(t * 0.5) * 0.6, Math.cos(t * 0.4) * 0.5);
       pointer.lerp(target, 0.05);
       lockup.rotation.y = Math.sin(t * 0.55) * 0.3 + pointer.x * 0.4;
       lockup.rotation.x = Math.sin(t * 0.4) * 0.04 - pointer.y * 0.14;

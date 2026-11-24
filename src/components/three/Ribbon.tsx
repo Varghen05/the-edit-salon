@@ -130,6 +130,7 @@ export default function Ribbon({
     const el = host.current;
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -232,6 +233,8 @@ export default function Ribbon({
       raf = requestAnimationFrame(tick);
       if (!visible) return;
       const t = reduce ? 4 : clock.getElapsedTime();
+      // touch screens have no hovering pointer, so the camera drifts on its own instead
+      if (coarse) target.set(Math.sin(t * 0.35) * 0.7, Math.cos(t * 0.27) * 0.5);
       pointer.lerp(target, 0.04);
       // how far the ribbon's box has scrolled past the top of the screen (0..1)
       const r = el.getBoundingClientRect();

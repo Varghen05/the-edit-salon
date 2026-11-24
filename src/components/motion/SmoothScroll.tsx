@@ -7,6 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { scrollState } from "./scrollState";
 
 gsap.registerPlugin(ScrollTrigger);
+// On phones the address bar shrinking and growing fires resize events that would re-layout pinned scenes
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export default function SmoothScroll() {
   useEffect(() => {

@@ -55,6 +55,11 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
         window.addEventListener("pointermove", move);
         return () => window.removeEventListener("pointermove", move);
       });
+      // Touch screens have no pointer, so the same depth layers drift gently on their own
+      mm.add("(pointer: coarse) and (prefers-reduced-motion: no-preference)", () => {
+        gsap.to(".fh-logo-wrap", { x: 9, y: -6, duration: 4.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        gsap.to(".fh-head", { x: -5, y: 3, duration: 5.4, ease: "sine.inOut", yoyo: true, repeat: -1 });
+      });
       return () => mm.revert();
     },
     { scope: root },

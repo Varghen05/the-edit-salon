@@ -22,9 +22,10 @@ const spots = [
 ];
 
 /**
- * A slow walk through the studio. Photographs hang at different depths inside a dark glass
- * tunnel and glide past the camera as you scroll; each softly fades in from the distance and
- * out as it passes. The camera also leans with the pointer. Phones get a two-column grid.
+ * A slow walk through the studio, the same on every screen. Photographs hang at different
+ * depths inside a dark glass tunnel and glide past the camera as you scroll; each softly
+ * fades in from the distance and out as it passes. The camera leans with the pointer, or
+ * drifts on its own on touch screens. Photo sizes and offsets scale down to fit phones.
  */
 export default function DepthGallery() {
   const root = useRef<HTMLElement>(null);
@@ -32,26 +33,61 @@ export default function DepthGallery() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
         const travel = 6000;
         const items = gsap.utils.toArray<HTMLElement>(".dg-item");
         const cam = { z: 0 };
+        const coarse = window.matchMedia("(pointer: coarse)").matches;
+        let scale = 1; // photo size, relative to a 1440px-wide screen
+        let spread = 1; // how far photos sit from the centre
+
+        const measure = () => {
+          scale = gsap.utils.clamp(0.5, 1, innerWidth / 1440);
+          spread = innerWidth < 768 ? 0.5 : 1;
+          items.forEach((el, i) => {
+            const g = gallery[i % gallery.length];
+            gsap.set(el, { width: (g.w > g.h ? 440 : 310) * scale });
+          });
+        };
+
         const layout = () => {
           items.forEach((el, i) => {
             const s = spots[i % spots.length];
             const z = s.z + cam.z;
             const o = gsap.utils.clamp(0, 1, (z + 4800) / 1500) * gsap.utils.clamp(0, 1, (650 - z) / 450);
-            gsap.set(el, { x: `${s.x}vw`, y: `${s.y}vh`, z, opacity: o, xPercent: -50, yPercent: -50 });
+            gsap.set(el, { x: s.x * 0.01 * innerWidth * spread, y: `${s.y}vh`, z, opacity: o, xPercent: -50, yPercent: -50 });
           });
           gsap.set(".dg-title", { opacity: gsap.utils.clamp(0, 1, 1 - cam.z / 700), scale: 1 + cam.z / 2600 });
           gsap.set(".dg-bar", { scaleX: cam.z / travel });
         };
+        measure();
         layout();
-        gsap.to(cam, { z: travel, ease: "none", onUpdate: layout, scrollTrigger: { trigger: root.current, start: "top top", end: "+=400%", scrub: 1.2, pin: true } });
 
-        // the camera leans toward the pointer
+        gsap.to(cam, {
+          z: travel,
+          ease: "none",
+          onUpdate: layout,
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top top",
+            end: "+=400%",
+            scrub: 1.2,
+            pin: true,
+            onRefresh: () => {
+              measure();
+              layout();
+            },
+          },
+        });
+
+        // the camera leans toward the pointer; on touch screens it drifts slowly by itself
         const rx = gsap.quickTo(".dg-stage", "rotateX", { duration: 1.4, ease: "power3" });
         const ry = gsap.quickTo(".dg-stage", "rotateY", { duration: 1.4, ease: "power3" });
+        if (coarse) {
+          gsap.to(".dg-stage", { rotateY: 3.5, duration: 5, ease: "sine.inOut", yoyo: true, repeat: -1 });
+          gsap.to(".dg-stage", { rotateX: -2.5, duration: 7, ease: "sine.inOut", yoyo: true, repeat: -1 });
+          return;
+        }
         const move = (e: PointerEvent) => {
           ry((e.clientX / innerWidth - 0.5) * 6);
           rx(-(e.clientY / innerHeight - 0.5) * 4);
@@ -59,35 +95,22 @@ export default function DepthGallery() {
         window.addEventListener("pointermove", move);
         return () => window.removeEventListener("pointermove", move);
       });
-      // Phones: each photo tips up out of depth as it arrives, and the two columns drift at different speeds
-      mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.utils.toArray<HTMLElement>(".dg-m").forEach((el, i) => {
-          gsap.fromTo(
-            el,
-            { y: 70, rotateX: 22, scale: 0.9, opacity: 0, transformPerspective: 700, transformOrigin: "50% 100%" },
-            { y: 0, rotateX: 0, scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: el, start: "top 98%", end: "top 62%", scrub: 0.6 } },
-          );
-          gsap.to(el, { yPercent: i % 2 ? -7 : 5, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.6 } });
-        });
-        gsap.from(".dg-title > *", { y: 30, opacity: 0, duration: 1, stagger: 0.12, ease: "power3.out", scrollTrigger: { trigger: ".dg-title", start: "top 85%" } });
-      });
       return () => mm.revert();
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="studio" className="relative z-10 overflow-hidden bg-ink md:h-screen">
+    <section ref={root} id="studio" className="relative z-10 h-[100svh] min-h-[560px] overflow-hidden bg-ink">
       <div className="blob top-[30%] left-[35%] h-[36vw] w-[36vw] bg-[#6b3358]" />
 
-      {/* desktop tunnel */}
-      <div className="absolute inset-0 hidden md:block" style={{ perspective: "950px" }}>
+      <div className="absolute inset-0" style={{ perspective: "950px" }}>
         <div className="dg-stage absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
           <div className="absolute top-1/2 left-1/2" style={{ transformStyle: "preserve-3d" }}>
             {gallery.map((g) => (
-              <figure key={g.src} className="dg-item glass absolute top-0 left-0 rounded-[26px] p-2" style={{ width: g.w > g.h ? 440 : 310 }}>
-                <div className="relative overflow-hidden rounded-[20px]" style={{ aspectRatio: `${g.w} / ${g.h}` }}>
-                  <Image src={g.src} alt={g.alt} fill sizes="440px" className="object-cover" />
+              <figure key={g.src} className="dg-item glass absolute top-0 left-0 rounded-[20px] p-1.5 sm:rounded-[26px] sm:p-2" style={{ width: g.w > g.h ? 440 : 310 }}>
+                <div className="relative overflow-hidden rounded-[15px] sm:rounded-[20px]" style={{ aspectRatio: `${g.w} / ${g.h}` }}>
+                  <Image src={g.src} alt={g.alt} fill sizes="(max-width: 768px) 230px, 440px" loading="eager" className="object-cover" />
                 </div>
               </figure>
             ))}
@@ -95,25 +118,16 @@ export default function DepthGallery() {
         </div>
       </div>
 
-      <div className="dg-title relative z-10 flex flex-col items-center justify-center px-5 pt-28 text-center md:pointer-events-none md:absolute md:inset-0 md:pt-0">
+      <div className="dg-title pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-5 text-center">
         <p className="eyebrow">Step inside</p>
         <h2 className="display mt-5 text-[clamp(2.8rem,7vw,6.8rem)]">
           Inside <em>the studio</em>
         </h2>
-        <p className="mt-5 hidden max-w-[420px] text-silver/65 md:block">Scroll to walk through the looks, the chairs and the light.</p>
+        <p className="mt-5 max-w-[420px] text-silver/65">Scroll to walk through the looks, the chairs and the light.</p>
       </div>
 
-      <div className="absolute inset-x-0 bottom-8 z-10 mx-auto hidden h-px w-[min(420px,80%)] bg-white/15 md:block">
+      <div className="absolute inset-x-0 bottom-8 z-10 mx-auto h-px w-[min(420px,80%)] bg-white/15">
         <span className="dg-bar block h-full origin-left scale-x-0 bg-rose" />
-      </div>
-
-      {/* phones */}
-      <div className="relative z-10 columns-2 gap-3 px-4 pt-12 pb-24 md:hidden">
-        {gallery.map((g) => (
-          <div key={g.src} className="dg-m relative mb-3 break-inside-avoid overflow-hidden rounded-2xl" style={{ aspectRatio: `${g.w} / ${g.h}` }}>
-            <Image src={g.src} alt={g.alt} fill sizes="50vw" className="object-cover" />
-          </div>
-        ))}
       </div>
 
       <p className="absolute right-5 bottom-4 z-10 text-[0.65rem] text-silver/35">Photos: Unsplash</p>

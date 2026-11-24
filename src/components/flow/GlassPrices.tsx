@@ -20,21 +20,12 @@ export default function GlassPrices() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        if (window.innerWidth >= 1024) gsap.from(".gp-card", { y: 120, rotateX: 18, opacity: 0, duration: 1.5, ease: "expo.out", stagger: 0.12, scrollTrigger: { trigger: ".gp-grid", start: "top 80%" } });
+        gsap.from(".gp-card", { y: 120, rotateX: 18, opacity: 0, duration: 1.5, ease: "expo.out", stagger: 0.12, scrollTrigger: { trigger: ".gp-grid", start: "top 80%" } });
       });
-      // Phones and tablets: each price card tips up out of depth as you scroll to it
-      mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
-        gsap.utils.toArray<HTMLElement>(".gp-card").forEach((el) => {
-          gsap.fromTo(
-            el,
-            { y: 60, rotateX: 16, scale: 0.94, opacity: 0.15, transformPerspective: 800, transformOrigin: "50% 100%" },
-            { y: 0, rotateX: 0, scale: 1, opacity: 1, ease: "none", scrollTrigger: { trigger: el, start: "top 98%", end: "top 55%", scrub: 0.6 } },
-          );
-        });
-      });
-      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const amp = window.innerWidth < 768 ? 0.45 : 1; // gentler drift on a single phone column
         gsap.utils.toArray<HTMLElement>(".gp-card").forEach((el, i) => {
-          gsap.to(el, { yPercent: i % 2 ? -10 : 6, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 1 } });
+          gsap.to(el, { yPercent: (i % 2 ? -10 : 6) * amp, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 1 } });
         });
       });
       return () => mm.revert();
