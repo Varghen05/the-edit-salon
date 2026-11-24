@@ -6,6 +6,7 @@ import ServiceRing from "@/components/flow/ServiceRing";
 import Founders from "@/components/flow/Founders";
 import DepthGallery from "@/components/flow/DepthGallery";
 import GlassPrices from "@/components/flow/GlassPrices";
+import ChairScene from "@/components/flow/ChairScene";
 import CtaFooter from "@/components/flow/CtaFooter";
 import Booking from "@/components/sections/Booking";
 import MapReveal from "@/components/sections/MapReveal";
@@ -27,6 +28,7 @@ export default async function Home() {
         <Booking />
         <MapReveal />
         <Faq />
+        <ChairScene />
       </main>
       <CtaFooter logoSvg={logoSvg} />
       <WhatsAppFab />

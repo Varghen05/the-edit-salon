@@ -63,7 +63,7 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
   const lines = [["Style,", "care", "&"], ["confidence,"], ["beautifully", "edited."]];
 
   return (
-    <section ref={root} id="top" className="relative min-h-[100svh] overflow-hidden bg-ink md:min-h-[820px]">
+    <section ref={root} id="top" className="relative flex min-h-[100svh] flex-col overflow-hidden bg-ink">
       <h1 className="sr-only">THE EDIT Unisex Salon, Pukkattupady, Kochi</h1>
 
       {/* dimmed silk, shaded out around the content so nothing competes with it */}
@@ -73,7 +73,7 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_52%_46%_at_50%_44%,rgba(27,15,31,0.82),rgba(27,15,31,0.45)_60%,transparent_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
 
-      <div className="fh-copy relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-5 pt-24 pb-16 text-center md:min-h-[820px] md:pt-24 md:pb-32">
+      <div className="fh-copy relative z-10 flex flex-1 flex-col items-center justify-center px-5 pt-32 pb-12 text-center md:pt-36 md:pb-8">
         <div className="fh-logo-wrap relative h-[clamp(210px,33svh,330px)] w-[min(90vw,560px)] shrink-0">
           <Logo3D className="absolute inset-0" fallbackSvg={logoSvg} />
         </div>
@@ -107,7 +107,7 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
       </div>
 
       {/* info strip with the live opening countdown */}
-      <div className="fh-in absolute inset-x-4 bottom-5 z-10 mx-auto hidden max-w-[1080px] items-center justify-between rounded-[30px] py-3 pr-20 pl-8 text-sm text-silver/75 glass md:flex">
+      <div className="fh-in relative z-10 mx-4 mt-2 mb-5 hidden w-[calc(100%-2rem)] max-w-[1080px] items-center justify-between self-center rounded-[30px] py-3 pr-20 pl-8 text-sm text-silver/75 glass md:flex">
         <div className="space-y-1.5">
           <p className="text-silver">Providence Square · Pukkattupady, Kochi</p>
           <p>Unisex · Hair · Skin · Beauty · Nails · Grooming</p>

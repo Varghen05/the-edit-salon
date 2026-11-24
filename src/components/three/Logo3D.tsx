@@ -104,7 +104,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       camera.aspect = w / h;
       const t = Math.tan((camera.fov * Math.PI) / 360);
       const dh = (extent.h * 1.14) / 2 / t;
-      const dw = (extent.w * 1.1) / 2 / (t * camera.aspect);
+      const dw = (extent.w * 1.24) / 2 / (t * camera.aspect);
       camera.position.set(0, 0, Math.max(dh, dw));
       camera.updateProjectionMatrix();
     };
