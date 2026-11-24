@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Ribbon from "../three/Ribbon";
+import Logo3D from "../three/Logo3D";
 import OpeningCountdown from "./OpeningCountdown";
 import { ArrowUpRight } from "../icons";
 import { site } from "@/lib/site";
@@ -30,7 +31,7 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
           .from(".fh-logo-wrap", { opacity: 0, y: 18, duration: 1.4 }, 0.15)
           .from(".fh-word", { yPercent: 100, duration: 1.1, stagger: 0.07 }, 0.7)
           .from(".fh-in", { opacity: 0, y: 16, duration: 1, stagger: 0.08 }, 1.2)
-          .fromTo(".fh-sheen", { xPercent: -120 }, { xPercent: 120, duration: 1.8, ease: "power2.inOut" }, 1.9);
+          ;
 
         gsap
           .timeline({ scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 } })
@@ -62,7 +63,7 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
   const lines = [["Style,", "care", "&"], ["confidence,"], ["beautifully", "edited."]];
 
   return (
-    <section ref={root} id="top" className="relative min-h-[100svh] overflow-hidden bg-ink md:h-[100svh] md:min-h-[720px]">
+    <section ref={root} id="top" className="relative min-h-[100svh] overflow-hidden bg-ink md:min-h-[820px]">
       <h1 className="sr-only">THE EDIT Unisex Salon, Pukkattupady, Kochi</h1>
 
       {/* dimmed silk, shaded out around the content so nothing competes with it */}
@@ -72,19 +73,12 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_52%_46%_at_50%_44%,rgba(27,15,31,0.82),rgba(27,15,31,0.45)_60%,transparent_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
 
-      <div className="fh-copy relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-5 pt-28 pb-16 text-center md:h-full md:min-h-0 md:pt-28 md:pb-36">
-        <div className="fh-logo-wrap relative h-[clamp(190px,30svh,300px)]" style={{ aspectRatio: "1092 / 1202" }}>
-          <div className="fh-logo h-full w-full" dangerouslySetInnerHTML={{ __html: logoSvg }} />
-          {/* one soft light pass over the metal, clipped to the logo's own shape */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 overflow-hidden [mask-image:url(/logo.svg)] [mask-size:100%_100%] [mask-repeat:no-repeat]"
-          >
-            <div className="fh-sheen absolute inset-y-0 -left-1/2 w-[200%] -translate-x-full bg-[linear-gradient(105deg,transparent_44%,rgba(255,255,255,0.7)_50%,transparent_56%)] mix-blend-overlay" />
-          </div>
+      <div className="fh-copy relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-5 pt-24 pb-16 text-center md:min-h-[820px] md:pt-24 md:pb-32">
+        <div className="fh-logo-wrap relative h-[clamp(210px,33svh,330px)] w-[min(90vw,560px)] shrink-0">
+          <Logo3D className="absolute inset-0" fallbackSvg={logoSvg} />
         </div>
 
-        <p className="fh-head display mt-10 text-[clamp(2.3rem,4.8vw,4.6rem)] text-silver">
+        <p className="fh-head display mt-8 text-[clamp(2.1rem,3.9vw,3.8rem)] text-silver">
           {lines.map((line, i) => (
             <span key={i} className="block overflow-hidden pb-[0.1em]">
               {line.map((w) => (
