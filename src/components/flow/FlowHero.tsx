@@ -72,10 +72,10 @@ export default function FlowHero({ logoSvg }: { logoSvg: string }) {
       <h1 className="sr-only">THE EDIT Unisex Salon, Pukkattupady, Kochi</h1>
 
       {/* dimmed silk, shaded out around the content so nothing competes with it */}
-      <div className="blob top-[-10%] left-[-10%] h-[55vw] w-[55vw] bg-[#5a2a52]" />
-      <div className="blob right-[-12%] bottom-[-18%] h-[48vw] w-[48vw] bg-[#8a4a5c] [animation-delay:-6s]" />
+      <div className="blob top-[-10%] left-[-10%] h-[55vw] w-[55vw] bg-[var(--blob-a)]" />
+      <div className="blob right-[-12%] bottom-[-18%] h-[48vw] w-[48vw] bg-[var(--blob-b)] [animation-delay:-6s]" />
       <Ribbon className="fh-silk absolute inset-0" count={3} lift={-2.2} dust />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_52%_46%_at_50%_44%,rgba(27,15,31,0.82),rgba(27,15,31,0.45)_60%,transparent_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_52%_46%_at_50%_44%,rgb(var(--scrim)/0.82),rgb(var(--scrim)/0.45)_60%,transparent_100%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent" />
 
       <div className="fh-copy relative z-10 flex flex-1 flex-col items-center justify-center px-5 pt-32 pb-12 text-center md:pt-36 md:pb-8">

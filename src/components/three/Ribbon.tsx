@@ -52,6 +52,7 @@ const vertex = /* glsl */ `
 const fragment = /* glsl */ `
   uniform float uTime;
   uniform float uSeed;
+  uniform float uDay;
   varying vec3 vNormal;
   varying vec3 vView;
   varying vec2 vUv;
@@ -72,7 +73,7 @@ const fragment = /* glsl */ `
     float fres = pow(1.0 - facing, 2.2);
     float hue = vUv.x * 1.4 + n.y * 0.35 + fres * 0.6 + uTime * 0.04 + uSeed;
     vec3 col = palette(hue);
-    col = mix(vec3(0.23, 0.11, 0.25), col, 0.35 + 0.65 * facing);
+    col = mix(mix(vec3(0.23, 0.11, 0.25), vec3(0.97, 0.78, 0.82), uDay), col, 0.35 + 0.65 * facing);
     vec3 h = normalize(vView + normalize(vec3(0.4, 0.8, 0.6)));
     float spec = pow(max(dot(n, h), 0.0), 48.0);
     col += spec * vec3(1.0, 0.9, 0.86) * 0.9 + fres * vec3(0.95, 0.72, 0.76) * 0.55;
@@ -163,6 +164,7 @@ export default function Ribbon({
           uSeed: { value: i * 1.7 },
           uTwist: { value: 0 },
           uLift: { value: lift },
+          uDay: { value: 0 },
           uPointer: { value: pointer },
         },
       });
@@ -176,6 +178,8 @@ export default function Ribbon({
     }
 
     let dustMat: THREE.ShaderMaterial | null = null;
+    let dustPoints: THREE.Points | null = null;
+    let dayMix = document.documentElement.dataset.theme === "day" ? 1 : 0;
     let dustGeo: THREE.BufferGeometry | null = null;
     if (dust) {
       const n = 260;
@@ -198,9 +202,9 @@ export default function Ribbon({
         blending: THREE.AdditiveBlending,
         uniforms: { uTime: { value: 0 }, uPixel: { value: renderer.getPixelRatio() } },
       });
-      const points = new THREE.Points(dustGeo, dustMat);
-      points.frustumCulled = false;
-      scene.add(points);
+      dustPoints = new THREE.Points(dustGeo, dustMat);
+      dustPoints.frustumCulled = false;
+      scene.add(dustPoints);
     }
 
     let baseZ = 11;
@@ -239,7 +243,11 @@ export default function Ribbon({
       // how far the ribbon's box has scrolled past the top of the screen (0..1)
       const r = el.getBoundingClientRect();
       const progress = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height)));
+      const day = document.documentElement.dataset.theme === "day";
+      dayMix += ((day ? 1 : 0) - dayMix) * 0.06;
+      if (dustPoints) dustPoints.visible = !day;
       materials.forEach((m) => {
+        m.uniforms.uDay.value = dayMix;
         m.uniforms.uTime.value = t;
         m.uniforms.uTwist.value += (progress * 0.45 - m.uniforms.uTwist.value) * 0.06;
       });

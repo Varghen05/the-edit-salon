@@ -58,12 +58,12 @@ export default function ChairScene() {
 
   return (
     <section ref={root} id="chair" className="relative z-10 bg-ink px-0 py-0 md:py-10">
-      <div className="cw-frame relative flex h-[92svh] min-h-[600px] items-center justify-center overflow-hidden">
+      <div className="cw-frame dark relative flex h-[92svh] min-h-[600px] items-center justify-center overflow-hidden">
         <div className="cw-photo absolute inset-0">
           <video className="h-full w-full object-cover" src="/video/chair-waiting.mp4" poster="/images/editorial/chair-waiting.jpg" autoPlay muted loop playsInline preload="metadata" aria-hidden />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-ink via-[#1b0f1f]/50 to-ink" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(27,15,31,0.55),transparent_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/50 to-ink" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgb(var(--scrim)/0.55),transparent_70%)]" />
 
         {/* a curve of rose-gold light across the ceiling */}
         <svg className="pointer-events-none absolute inset-x-0 top-0 h-[45%] w-full" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden>

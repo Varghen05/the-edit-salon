@@ -27,7 +27,7 @@ const EXTRUDE: Record<Group, { depth: number; bevel: number }> = {
   orn: { depth: 5, bevel: 0.5 },
 };
 
-type Part = { mesh: THREE.Mesh; group: Group; cx: number; cy: number; w: number; h: number };
+type Part = { mesh: THREE.Mesh; group: Group; cx: number; cy: number; w: number; h: number; z: number };
 
 /**
  * The THE EDIT logo as real 3D metal. Every letter of the supplied logo artwork is extruded
@@ -85,17 +85,27 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       emissiveIntensity: 0.3,
       side: THREE.DoubleSide,
     });
+    // Gold is kept more saturated than the silver and exempt from tone mapping, so it never washes out
     const gold = new THREE.MeshPhysicalMaterial({
-      color: 0xffc766,
-      metalness: 0.88,
-      roughness: 0.18,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.12,
-      envMapIntensity: 2.6,
-      emissive: 0x6b3f0c,
-      emissiveIntensity: 0.7,
+      color: 0xf5a800,
+      metalness: 0.45,
+      roughness: 0.3,
+      clearcoat: 0.3,
+      clearcoatRoughness: 0.2,
+      envMapIntensity: 0.9,
+      emissive: 0xcf7d00,
+      emissiveIntensity: 0.9,
+      toneMapped: false,
       side: THREE.DoubleSide,
     });
+    // Night and day looks for the metal: bright on the dark site, deeper steel and gold on the light one
+    const looks = {
+      silverNight: new THREE.Color(0xf6f3f6),
+      silverDay: new THREE.Color(0x4a4655),
+      goldNight: new THREE.Color(0xf5a800),
+      goldDay: new THREE.Color(0xdb9a0a),
+    };
+    let dayMix = document.documentElement.dataset.theme === "day" ? 1 : 0;
 
     const extent = { w: 700, h: 650 };
     const fit = () => {
@@ -130,6 +140,14 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       const t = reduce ? 1 : clock.getElapsedTime();
       if (coarse) target.set(Math.sin(t * 0.5) * 0.6, Math.cos(t * 0.4) * 0.5);
       pointer.lerp(target, 0.05);
+      const day = document.documentElement.dataset.theme === "day";
+      dayMix += ((day ? 1 : 0) - dayMix) * 0.06;
+      silver.color.lerpColors(looks.silverNight, looks.silverDay, dayMix);
+      silver.emissiveIntensity = 0.3 * (1 - dayMix);
+      silver.envMapIntensity = 2.6 - dayMix * 0.7;
+      gold.color.lerpColors(looks.goldNight, looks.goldDay, dayMix);
+      gold.emissiveIntensity = 0.9 - dayMix * 0.3;
+      renderer.toneMappingExposure = 1.4 - dayMix * 0.3;
       lockup.rotation.y = Math.sin(t * 0.55) * 0.3 + pointer.x * 0.4;
       lockup.rotation.x = Math.sin(t * 0.4) * 0.04 - pointer.y * 0.14;
       lockup.position.y = Math.sin(t * 0.8) * 6;
@@ -161,7 +179,11 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
         if (!group) continue;
         const shapes = SVGLoader.createShapes(path);
         if (!shapes.length) continue;
-        const { depth, bevel } = EXTRUDE[group];
+        const base = EXTRUDE[group];
+        // the gold ribbon sits in front of the silver S and R, and is thicker, so it stays visible
+        const isRibbon = id === "Gold_Ribbon";
+        const depth = isRibbon ? 52 : base.depth;
+        const bevel = isRibbon ? 5.5 : base.bevel;
         const geo = new THREE.ExtrudeGeometry(shapes, {
           depth,
           bevelEnabled: true,
@@ -177,7 +199,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
         geo.translate(-c.x, -c.y, -c.z);
         geometries.push(geo);
         const mesh = new THREE.Mesh(geo, GOLD_IDS.has(id) ? gold : silver);
-        parts.push({ mesh, group, cx: c.x, cy: c.y, w: box.max.x - box.min.x, h: box.max.y - box.min.y });
+        parts.push({ mesh, group, cx: c.x, cy: c.y, w: box.max.x - box.min.x, h: box.max.y - box.min.y, z: isRibbon ? 22 : 0 });
       }
       if (!parts.length || cancelled) return;
 
@@ -214,7 +236,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       fit();
 
       placed.forEach(({ p, k, x, y }) => {
-        p.mesh.position.set(x, y + totalH / 2, 0);
+        p.mesh.position.set(x, y + totalH / 2, p.z * k);
         p.mesh.scale.setScalar(k);
         lockup.add(p.mesh);
       });
@@ -227,7 +249,7 @@ export default function Logo3D({ className, fallbackSvg }: { className?: string;
       placed.forEach(({ p, k }) => {
         const i = counters[p.group]++;
         const m = p.mesh;
-        const to = { x: m.position.x, y: m.position.y, z: 0 };
+        const to = { x: m.position.x, y: m.position.y, z: m.position.z };
         const start = order[p.group] + (p.group === "word" ? i * 0.08 : p.group === "salon" ? i * 0.035 : i * 0.12);
         const fromY = p.group === "word" ? to.y + 260 : p.group === "salon" ? to.y - 120 : to.y;
         m.position.y = fromY;

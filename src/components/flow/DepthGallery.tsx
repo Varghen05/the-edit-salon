@@ -102,7 +102,7 @@ export default function DepthGallery() {
 
   return (
     <section ref={root} id="studio" className="relative z-10 h-[100svh] min-h-[560px] overflow-hidden bg-ink">
-      <div className="blob top-[30%] left-[35%] h-[36vw] w-[36vw] bg-[#6b3358]" />
+      <div className="blob top-[30%] left-[35%] h-[36vw] w-[36vw] bg-[var(--blob-a)]" />
 
       <div className="absolute inset-0" style={{ perspective: "950px" }}>
         <div className="dg-stage absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
@@ -126,7 +126,7 @@ export default function DepthGallery() {
         <p className="mt-5 max-w-[420px] text-silver/65">Scroll to walk through the looks, the chairs and the light.</p>
       </div>
 
-      <div className="absolute inset-x-0 bottom-8 z-10 mx-auto h-px w-[min(420px,80%)] bg-white/15">
+      <div className="absolute inset-x-0 bottom-8 z-10 mx-auto h-px w-[min(420px,80%)] bg-silver/15">
         <span className="dg-bar block h-full origin-left scale-x-0 bg-rose" />
       </div>
 

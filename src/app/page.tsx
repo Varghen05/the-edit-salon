@@ -1,5 +1,6 @@
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import WhatsAppFab from "@/components/WhatsAppFab";
+import Fireflies from "@/components/flow/Fireflies";
 import FlowNav from "@/components/flow/FlowNav";
 import FlowHero from "@/components/flow/FlowHero";
 import ServiceRing from "@/components/flow/ServiceRing";
@@ -18,6 +19,7 @@ export default async function Home() {
   return (
     <>
       <SmoothScroll />
+      <Fireflies />
       <FlowNav />
       <main className="relative">
         <FlowHero logoSvg={logoSvg} />

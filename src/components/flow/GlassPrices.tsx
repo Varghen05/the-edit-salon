@@ -35,8 +35,8 @@ export default function GlassPrices() {
 
   return (
     <section ref={root} id="prices" className="relative z-10 overflow-hidden bg-ink-2 py-28 lg:py-40">
-      <div className="blob top-[5%] right-[5%] h-[34vw] w-[34vw] bg-[#7a3d5c]" />
-      <div className="blob bottom-[5%] left-[0%] h-[30vw] w-[30vw] bg-[#a8714f] opacity-30 [animation-delay:-5s]" />
+      <div className="blob top-[5%] right-[5%] h-[34vw] w-[34vw] bg-[var(--blob-b)]" />
+      <div className="blob bottom-[5%] left-[0%] h-[30vw] w-[30vw] bg-[var(--blob-c)] opacity-30 [animation-delay:-5s]" />
 
       <div className="wrap relative">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
@@ -54,7 +54,7 @@ export default function GlassPrices() {
             <article key={g.group} className="gp-card glass overflow-hidden rounded-[32px] transition-transform duration-500 hover:-translate-y-2">
               <div className="relative h-44 overflow-hidden">
                 <Image src={g.img} alt="" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#22122a] via-[#22122a]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgb(var(--scrim))] via-[rgb(var(--scrim)/0.4)] to-transparent" />
                 <h3 className="absolute bottom-4 left-7 font-serif text-3xl">{g.group}</h3>
               </div>
               <ul className="px-7 pt-3 pb-7">

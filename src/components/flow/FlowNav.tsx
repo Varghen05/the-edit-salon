@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { scrollState } from "../motion/scrollState";
 import { ArrowUpRight } from "../icons";
+import ThemeToggle from "./ThemeToggle";
 import { site, whatsappLink } from "@/lib/site";
 
 const links = [
@@ -83,7 +84,7 @@ export default function FlowNav() {
         <nav
           aria-label="Main"
           className={`glass relative mx-auto flex h-[60px] max-w-[1180px] items-center justify-between gap-3 rounded-full pr-1.5 pl-3 transition-colors duration-500 sm:h-[68px] sm:pl-5 ${
-            scrolled || open ? "bg-[rgba(27,15,31,0.72)]" : ""
+            scrolled || open ? "bg-[rgb(var(--scrim)/0.72)]" : ""
           }`}
         >
           <a
@@ -118,7 +119,7 @@ export default function FlowNav() {
                   aria-current={active === l.id ? "true" : undefined}
                   className={`relative block rounded-full px-4 py-2.5 text-[0.9rem] transition-colors duration-300 hover:text-silver ${
                     active === l.id
-                      ? "bg-white/10 text-silver"
+                      ? "bg-silver/10 text-silver"
                       : "text-silver/65"
                   }`}
                 >
@@ -129,6 +130,7 @@ export default function FlowNav() {
           </ul>
 
           <div className="flex shrink-0 items-center gap-1.5">
+            <ThemeToggle />
             <a
               href="#book"
               className="btn btn-solid !px-4 !py-2.5 text-[0.85rem] sm:!px-5"
@@ -136,7 +138,7 @@ export default function FlowNav() {
               Book now <ArrowUpRight className="hidden h-4 w-4 sm:block" />
             </a>
             <button
-              className="grid h-11 w-11 place-items-center rounded-full bg-white/8 transition-colors hover:bg-white/14 lg:hidden"
+              className="grid h-11 w-11 place-items-center rounded-full bg-silver/8 transition-colors hover:bg-silver/14 lg:hidden"
               onClick={() => setOpen((o) => !o)}
               aria-expanded={open}
               aria-controls="mobile-menu"
@@ -170,7 +172,7 @@ export default function FlowNav() {
       <div
         id="mobile-menu"
         aria-hidden={!open}
-        className={`fixed inset-0 z-40 flex flex-col bg-[rgba(20,10,24,0.88)] px-6 pt-28 pb-24 backdrop-blur-2xl transition-opacity duration-500 lg:hidden ${
+        className={`fixed inset-0 z-40 flex flex-col bg-[rgb(var(--scrim)/0.88)] px-6 pt-28 pb-24 backdrop-blur-2xl transition-opacity duration-500 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
@@ -181,7 +183,7 @@ export default function FlowNav() {
                 href={l.href}
                 tabIndex={open ? 0 : -1}
                 onClick={() => setOpen(false)}
-                className="flex items-baseline gap-4 border-b border-white/8 py-3.5 font-serif text-[2.4rem] leading-none text-silver transition-all duration-700 ease-out"
+                className="flex items-baseline gap-4 border-b border-silver/8 py-3.5 font-serif text-[2.4rem] leading-none text-silver transition-all duration-700 ease-out"
                 style={{
                   transform: open ? "none" : "translateY(110%)",
                   transitionDelay: open ? `${120 + i * 70}ms` : "0ms",

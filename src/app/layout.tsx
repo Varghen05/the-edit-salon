@@ -57,12 +57,16 @@ const jsonLd = {
 };
 
 // Marks the document as JS-capable before paint so reveal animations never flash.
+// Picks day or night before first paint: the visitor's saved choice, otherwise the local time.
+const themeScript = `(function(){try{var t=localStorage.getItem('theedit-theme');if(t!=='day'&&t!=='night'){var h=new Date().getHours();t=h>=6&&h<18?'day':'night'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='night'}})()`;
+
 const jsFlag = `document.documentElement.classList.add('js')`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: jsFlag }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>

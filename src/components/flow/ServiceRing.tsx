@@ -96,7 +96,7 @@ export default function ServiceRing() {
   return (
     <section ref={root} id="services" className="relative z-10 h-[100svh] min-h-[560px] overflow-hidden bg-ink-2">
       <Ribbon className="absolute inset-0 opacity-70" count={2} lift={-1.2} />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,transparent_30%,rgba(34,18,42,0.85)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_60%,transparent_30%,rgb(var(--scrim)/0.85)_100%)]" />
 
       <div className="wrap absolute inset-x-0 top-0 z-20 pt-24 sm:pt-28 lg:pt-32">
         <p className="eyebrow">The services</p>
@@ -106,7 +106,7 @@ export default function ServiceRing() {
       </div>
 
       <div className="absolute inset-0" style={{ perspective: "clamp(1300px, 250vw, 1700px)" }}>
-        <div aria-hidden className="ring-title pointer-events-none absolute top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif text-[22vw] leading-none whitespace-nowrap text-white/[0.05] lg:text-[15vw]" />
+        <div aria-hidden className="ring-title pointer-events-none absolute top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif text-[22vw] leading-none whitespace-nowrap text-silver/[0.05] lg:text-[15vw]" />
         <div className="absolute top-[63%] left-1/2 h-0 w-0" style={{ transformStyle: "preserve-3d" }}>
           {services.map((s) => (
             <a key={s.key} href="#prices" className="ring-card glass group absolute top-0 left-0 block w-[min(200px,54vw)] overflow-hidden rounded-[26px] p-2.5 lg:w-[290px] lg:rounded-[30px] lg:p-3" style={{ backfaceVisibility: "hidden" }}>
@@ -117,7 +117,7 @@ export default function ServiceRing() {
               <div className="px-2 pt-3.5 pb-2 lg:px-2.5 lg:pt-4 lg:pb-2.5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif text-2xl lg:text-3xl">{s.title}</h3>
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-white/8 transition-transform duration-500 group-hover:rotate-45 lg:h-9 lg:w-9">
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-silver/8 transition-transform duration-500 group-hover:rotate-45 lg:h-9 lg:w-9">
                     <ArrowUpRight className="h-4 w-4 text-rose" />
                   </span>
                 </div>
@@ -130,7 +130,7 @@ export default function ServiceRing() {
 
         <div className="absolute inset-x-0 bottom-8 mx-auto flex w-[min(420px,80%)] items-center gap-4 text-xs tracking-[0.25em] text-silver/60">
           <span className="ring-count tabular-nums">01 / 05</span>
-          <span className="h-px flex-1 bg-white/15">
+          <span className="h-px flex-1 bg-silver/15">
             <span className="ring-bar block h-full origin-left scale-x-[0.2] bg-rose" />
           </span>
           <span>SCROLL</span>

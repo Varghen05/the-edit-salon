@@ -151,7 +151,7 @@ export default function MapReveal() {
           <div className="addr-card dark relative z-10 mt-4 w-full rounded-2xl border border-gold/30 bg-black/80 p-6 backdrop-blur-xl sm:absolute sm:bottom-8 sm:left-8 sm:mt-0 sm:max-w-[380px]">
             <p className="label">Visit</p>
             <address className="mt-2 font-serif text-xl leading-snug text-silver not-italic">{fullAddress}</address>
-            <div className="mt-4 border-t border-white/10 pt-4">
+            <div className="mt-4 border-t border-silver/10 pt-4">
               <p className="label">Hours</p>
               {site.hours.map((h) => (
                 <p key={h.days} className="mt-1 flex justify-between text-sm text-silver/85">

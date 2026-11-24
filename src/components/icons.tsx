@@ -2,7 +2,7 @@
 // plus the four-point star that appears in the logo's ornament.
 import type { SVGProps } from "react";
 
-export { ArrowRight, ArrowUpRight, Clock, MapPin, Navigation, Phone, Plus, Search, Star } from "lucide-react";
+export { ArrowRight, ArrowUpRight, Clock, MapPin, Navigation, Phone, Plus, Search, Star, Sun, Moon } from "lucide-react";
 
 /** The four-point star from the logo ornament, for dividers and list markers. */
 export function Sparkle(props: SVGProps<SVGSVGElement>) {
